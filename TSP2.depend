@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1729283973 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\common.cpp
+	"common.h"
+
+1729536494 c:\users\kostya\desktop\cb projects\sfml\tsp2\common.h
+	<bits/stdc++.h>
+
+1729357000 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\main.cpp
+	"common.h"
+

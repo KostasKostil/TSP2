@@ -1,0 +1,90 @@
+#include "common.h"
+
+using namespace std;
+
+void Assert(bool flag, std::string message)
+{
+    if (!flag)
+    {
+        cerr<<message<<endl;
+        exit(0xdead);
+    }
+}
+void Assert(bool flag, std::function<void(std::ostream&)> message)
+{
+    if (!flag)
+    {
+        message(cerr);
+        exit(0xdead);
+    }
+}
+
+TSP::TSP(){}
+TSP::TSP(std::istream& in)
+{
+    in>>n;
+    assign(n, vector<double>(n));
+    for (int i=0; i<n; i++)
+        for (int j=0; j<n; j++)
+            in>>g(i, j);
+    coords.resize(n);
+    for (int i=0; i<n; i++)
+        in>>coords[i].x>>coords[i].y;
+
+    for (int i=0; i<n; i++)
+        for (int j=i+1; j<n; j++)
+            Assert(g(i, j) == g(j, i), "TSP::TSP matrix must be symmetrical");
+    for (int i=0; i<n; i++)
+        Assert(g(i, i) == 0, "TSP::TSP matrix must have zeroes on diagonal");
+}
+TSP::TSP(std::string filename)
+{
+    ifstream fin(filename);
+    *this = TSP(fin);
+}
+void TSP::Save(std::ostream& out)
+{
+    out<<fixed<<setprecision(10);
+    out<<n<<"\n";
+    for (int i=0; i<n; i++, out<<"\n")
+        for (int j=0; j<n; j++)
+            out<<g(i, j)<<" ";
+    for (int i=0; i<n; i++)
+        out<<coords[i].x<<" "<<coords[i].y<<"\n";
+    out.flush();
+}
+void TSP::Save(std::string filename)
+{
+    ofstream fout(filename);
+    Save(fout);
+}
+double& TSP::g(int i, int j)
+{
+    return (*this)[i][j];
+}
+
+double Distance(Point A, Point B)
+{
+    return hypot(A.x-B.x, A.y-B.y);
+}
+double Distance(Point A, Point B, Metric metric)
+{
+    switch (metric)
+    {
+        case Metric::Euclidean: return hypot(A.x-B.x, A.y-B.y);
+        case Metric::Manhattan: return abs(A.x-B.x) + abs(A.y-B.y);
+        case Metric::Chebyshev: return max(abs(A.x-B.x), abs(A.y-B.y));
+    }
+    Assert(false, "Distance: unknown metric");
+    return 0;
+}
+TSP LoadPlaneTSP(std::istream& in, Metric metric)
+{
+    TSP tsp;
+
+}
+TSP LoadPlaneTSP(std::string filename, Metric metric)
+{
+    ifstream fin(filename);
+    return LoadPlaneTSP(fin, metric);
+}

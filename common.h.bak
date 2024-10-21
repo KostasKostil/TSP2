@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+
+constexpr double Pi = acos(-1);
+
+void Assert(bool flag, std::string message);
+
+struct Point
+{
+    double x, y;
+};
+double Distance(Point A, Point B);
+
+struct TSP : std::vector<std::vector<double> >
+{
+    std::vector<Point> coords;
+
+    TSP();
+    TSP(std::string filename);
+    TSP(std::istream& in);
+    void Save(std::string filename, Encoding encoding);
+    void Save(std::ostream& out, Encoding encoding);
+
+    int n;
+    double& g(int i, int j);
+};
+
+class Metric
+{
+    Euclidean,
+    Manhattan,
+
+};
+TSP LoadPlaneTSP
