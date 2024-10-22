@@ -1,10 +1,24 @@
 # depslib dependency file v1.0
-1729283973 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\common.cpp
+1729628361 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\common.cpp
 	"common.h"
 
-1729536494 c:\users\kostya\desktop\cb projects\sfml\tsp2\common.h
+1729628199 c:\users\kostya\desktop\cb projects\sfml\tsp2\common.h
 	<bits/stdc++.h>
 
-1729357000 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\main.cpp
+1729628638 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\main.cpp
+	"common.h"
+	"mst.h"
+	"basic_solvers.h"
+
+1729626011 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\mst.cpp
+	"mst.h"
+
+1729624566 c:\users\kostya\desktop\cb projects\sfml\tsp2\mst.h
+	"common.h"
+
+1729628512 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\basic_solvers.cpp
+	"basic_solvers.h"
+
+1729627663 c:\users\kostya\desktop\cb projects\sfml\tsp2\basic_solvers.h
 	"common.h"
 

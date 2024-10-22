@@ -2,6 +2,7 @@
 
 using namespace std;
 
+/// HELPERS
 void Assert(bool flag, std::string message)
 {
     if (!flag)
@@ -18,7 +19,23 @@ void Assert(bool flag, std::function<void(std::ostream&)> message)
         exit(0xdead);
     }
 }
+double Distance(Point A, Point B)
+{
+    return hypot(A.x-B.x, A.y-B.y);
+}
+double Distance(Point A, Point B, Metric metric)
+{
+    switch (metric)
+    {
+        case Metric::Euclidean: return hypot(A.x-B.x, A.y-B.y);
+        case Metric::Manhattan: return abs(A.x-B.x) + abs(A.y-B.y);
+        case Metric::Chebyshev: return max(abs(A.x-B.x), abs(A.y-B.y));
+    }
+    Assert(false, "Distance: unknown metric");
+    return 0;
+}
 
+/// TSP
 TSP::TSP(){}
 TSP::TSP(std::istream& in)
 {
@@ -33,9 +50,9 @@ TSP::TSP(std::istream& in)
 
     for (int i=0; i<n; i++)
         for (int j=i+1; j<n; j++)
-            Assert(g(i, j) == g(j, i), "TSP::TSP matrix must be symmetrical");
+            Assert(g(i, j) == g(j, i), "TSP constructor: matrix must be symmetrical");
     for (int i=0; i<n; i++)
-        Assert(g(i, i) == 0, "TSP::TSP matrix must have zeroes on diagonal");
+        Assert(g(i, i) == 0, "TSP constructor: matrix must have zeroes on diagonal");
 }
 TSP::TSP(std::string filename)
 {
@@ -62,23 +79,18 @@ double& TSP::g(int i, int j)
 {
     return (*this)[i][j];
 }
-
-double Distance(Point A, Point B)
+const double& TSP::g(int i, int j) const
 {
-    return hypot(A.x-B.x, A.y-B.y);
+    return (*this)[i][j];
 }
-double Distance(Point A, Point B, Metric metric)
+double TSP::Length(const std::vector<int>& tour) const
 {
-    switch (metric)
-    {
-        case Metric::Euclidean: return hypot(A.x-B.x, A.y-B.y);
-        case Metric::Manhattan: return abs(A.x-B.x) + abs(A.y-B.y);
-        case Metric::Chebyshev: return max(abs(A.x-B.x), abs(A.y-B.y));
-    }
-    Assert(false, "Distance: unknown metric");
-    return 0;
+    double ans = 0;
+    for (int i=0; i<n; i++)
+        ans += g(tour[i], tour[(i+1)%n]);
+    return ans;
 }
-TSP LoadPlaneTSP(std::istream& in, Metric metric)
+TSP TSP::LoadPlaneTSP(std::istream& in, Metric metric)
 {
     TSP tsp;
     in>>tsp.n;
@@ -91,8 +103,30 @@ TSP LoadPlaneTSP(std::istream& in, Metric metric)
             tsp[i][j] = tsp[j][i] = Distance(tsp.coords[i], tsp.coords[j], metric);
     return tsp;
 }
-TSP LoadPlaneTSP(std::string filename, Metric metric)
+TSP TSP::LoadPlaneTSP(std::string filename, Metric metric)
 {
     ifstream fin(filename);
     return LoadPlaneTSP(fin, metric);
+}
+
+/// DSU
+DSU::DSU(){}
+int DSU::Get(int v)
+{
+    while (int(p.size()) <= v)
+    {
+        int n = p.size();
+        p.push_back(n);
+    }
+    if (p[v] == v)
+        return v;
+    return p[v] = Get(p[v]);
+}
+mt19937 dsu_rng(47);
+void DSU::Unite(int u, int v)
+{
+    u = Get(u);
+    v = Get(v);
+    if (dsu_rng()&1) swap(u, v);
+    p[u] = v;
 }

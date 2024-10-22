@@ -71,9 +71,13 @@
 		<Linker>
 			<Add directory="C:/Program Files/CodeBlocks/SFML 2.6.1/lib" />
 		</Linker>
+		<Unit filename="basic_solvers.cpp" />
 		<Unit filename="common.cpp" />
 		<Unit filename="common.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mst.cpp" />
+		<Unit filename="mst.h" />
+		<Unit filename="solvers.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

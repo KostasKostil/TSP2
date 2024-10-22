@@ -1,7 +1,11 @@
 #pragma once
 #include <bits/stdc++.h>
+#define fi first
+#define se second
+#define pb push_back
 
-constexpr double Pi = acos(-1);
+const double INF = 1e12;
+const double EPS = 1e-12;
 
 void Assert(bool flag, std::string message);
 void Assert(bool flag, std::function<void(std::ostream&)> message);
@@ -10,7 +14,14 @@ struct Point
 {
     double x, y;
 };
-
+enum Metric
+{
+    Euclidean,
+    Manhattan,
+    Chebyshev,
+};
+double Distance(Point A, Point B);
+double Distance(Point A, Point B, Metric metric);
 struct TSP : std::vector<std::vector<double> >
 {
     std::vector<Point> coords;
@@ -23,16 +34,17 @@ struct TSP : std::vector<std::vector<double> >
 
     int n;
     double& g(int i, int j);
+    const double& g(int i, int j) const;
+    double Length(const std::vector<int>& tour) const;
+
+    static TSP LoadPlaneTSP(std::istream& in, Metric metric = Metric::Euclidean);
+    static TSP LoadPlaneTSP(std::string filename, Metric metric = Metric::Euclidean);
 };
 
-enum Metric
+struct DSU
 {
-    Euclidean,
-    Manhattan,
-    Chebyshev,
+    DSU();
+    std::vector<int> p;
+    int Get(int v);
+    void Unite(int u, int v);
 };
-double Distance(Point A, Point B);
-double Distance(Point A, Point B, Metric metric);
-TSP LoadPlaneTSP(std::istream& in, Metric metric);
-TSP LoadPlaneTSP(std::string filename, Metric metric);
-
