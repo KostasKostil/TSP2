@@ -5,7 +5,7 @@ using namespace std;
 MST::MST(const TSP& tsp, int root)
 {
     int n = tsp.n;
-    Assert(root >= -1 && root < n, "TSP constructor: incorrect root value");
+    Require(root >= -1 && root < n, "TSP constructor: incorrect root value");
     weight = 0;
     deg.assign(n, 0);
     g.resize(n);
@@ -48,7 +48,7 @@ MST::MST(const TSP& tsp, int root)
     }
     if (root != -1)
     {
-        Assert(n>=3, "MST constructor: n<=2 and root != -1");
+        Require(n>=3, "MST constructor: n<=2 and root != -1");
         int min1 = -1;
         int min2 = -1;
         for (int i=0; i<n; i++)

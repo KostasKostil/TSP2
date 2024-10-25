@@ -4,11 +4,14 @@
 #define se second
 #define pb push_back
 
-const double INF = 1e12;
 const double EPS = 1e-12;
+const double INF = 1e12;   // for numerical methods
+const double INFDP = 1e36; // for dp initialization
 
 void Assert(bool flag, std::string message);
 void Assert(bool flag, std::function<void(std::ostream&)> message);
+void Require(bool flag, std::string message);
+void Require(bool flag, std::function<void(std::ostream&)> message);
 
 struct Point
 {

@@ -7,7 +7,7 @@ void Assert(bool flag, std::string message)
 {
     if (!flag)
     {
-        cerr<<message<<endl;
+        cerr<<"ASSERT FAILED"<<endl<<message<<endl;
         exit(0xdead);
     }
 }
@@ -15,10 +15,32 @@ void Assert(bool flag, std::function<void(std::ostream&)> message)
 {
     if (!flag)
     {
+        cerr<<"ASSERT FAILED"<<endl;
         message(cerr);
         exit(0xdead);
     }
 }
+void Require(bool flag, std::string message)
+{
+    if (!flag)
+    {
+        cerr<<"REQUIRE FAILED"<<endl;
+        cerr<<message<<endl;
+        throw invalid_argument(message);
+    }
+}
+void Require(bool flag, std::function<void(std::ostream&)> message)
+{
+    if (!flag)
+    {
+        cerr<<"REQUIRE FAILED"<<endl;
+        stringstream ss;
+        message(ss);
+        cerr<<ss.str()<<endl;
+        throw invalid_argument(ss.str());
+    }
+}
+
 double Distance(Point A, Point B)
 {
     return hypot(A.x-B.x, A.y-B.y);
@@ -50,9 +72,9 @@ TSP::TSP(std::istream& in)
 
     for (int i=0; i<n; i++)
         for (int j=i+1; j<n; j++)
-            Assert(g(i, j) == g(j, i), "TSP constructor: matrix must be symmetrical");
+            Require(g(i, j) == g(j, i), "TSP constructor: matrix must be symmetrical");
     for (int i=0; i<n; i++)
-        Assert(g(i, i) == 0, "TSP constructor: matrix must have zeroes on diagonal");
+        Require(g(i, i) == 0, "TSP constructor: matrix must have zeroes on diagonal");
 }
 TSP::TSP(std::string filename)
 {
@@ -85,6 +107,16 @@ const double& TSP::g(int i, int j) const
 }
 double TSP::Length(const std::vector<int>& tour) const
 {
+    Require(int(tour.size()) == n, "TSP::Length tour length is not n");
+    vector<bool> used(n);
+    for (int i=0; i<n; i++)
+    {
+        Require(tour[i] >= 0 && tour[i] < n, "TSP::Length invalid vertex number");
+        used[tour[i]] = true;
+    }
+    for (int i=0; i<n; i++)
+        Require(used[i], "TSP::Length not all vertices are unique");
+
     double ans = 0;
     for (int i=0; i<n; i++)
         ans += g(tour[i], tour[(i+1)%n]);
