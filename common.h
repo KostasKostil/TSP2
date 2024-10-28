@@ -4,8 +4,9 @@
 #define se second
 #define pb push_back
 
-const double EPS = 1e-12;
-const double INF = 1e12;   // for numerical methods
+inline std::mt19937 rng(time(0));
+const double EPS = 1e-9;
+const double INF = 1e9;   // for numerical methods
 const double INFDP = 1e36; // for dp initialization
 
 void Assert(bool flag, std::string message);
@@ -42,6 +43,7 @@ struct TSP : std::vector<std::vector<double> >
 
     static TSP LoadPlaneTSP(std::istream& in, Metric metric = Metric::Euclidean);
     static TSP LoadPlaneTSP(std::string filename, Metric metric = Metric::Euclidean);
+    static TSP GenerateRandom(int n, double AMAX = 1e5, Metric metric = Metric::Euclidean);
 };
 
 struct DSU

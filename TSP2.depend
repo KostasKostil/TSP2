@@ -1,19 +1,20 @@
 # depslib dependency file v1.0
-1729851817 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\common.cpp
+1730146353 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\common.cpp
 	"common.h"
 
-1729852519 c:\users\kostya\desktop\cb projects\sfml\tsp2\common.h
+1730143958 c:\users\kostya\desktop\cb projects\sfml\tsp2\common.h
 	<bits/stdc++.h>
 
-1729855889 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\main.cpp
+1730144429 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\main.cpp
 	"common.h"
 	"mst.h"
 	"solvers.h"
+	"smart_set.h"
 
-1729843629 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\mst.cpp
+1730144186 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\mst.cpp
 	"mst.h"
 
-1729624566 c:\users\kostya\desktop\cb projects\sfml\tsp2\mst.h
+1729620966 c:\users\kostya\desktop\cb projects\sfml\tsp2\mst.h
 	"common.h"
 
 1729703111 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\basic_solvers.cpp
@@ -22,12 +23,22 @@
 1729627663 c:\users\kostya\desktop\cb projects\sfml\tsp2\basic_solvers.h
 	"common.h"
 
-1729843750 c:\users\kostya\desktop\cb projects\sfml\tsp2\solvers.h
+1729859683 c:\users\kostya\desktop\cb projects\sfml\tsp2\solvers.h
 	"common.h"
 
-1729856414 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\greedy_edge_picker.cpp
+1730141308 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\greedy_edge_picker.cpp
 	"solvers.h"
 
-1729843800 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\nearest_neighbor.cpp
+1729840200 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\nearest_neighbor.cpp
 	"solvers.h"
+
+1730143919 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\local_dp_optimizer.cpp
+	"solvers.h"
+	"smart_set.h"
+
+1729864071 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\smart_set.cpp
+	"smart_set.h"
+
+1729863988 c:\users\kostya\desktop\cb projects\sfml\tsp2\smart_set.h
+	<bits/stdc++.h>
 

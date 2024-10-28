@@ -71,7 +71,8 @@ TSP MST_GradientDescentTransform(TSP tsp, int root)
     int n = tsp.n;
     double step = INF;
     MST mst = MST(tsp, root);
-    while (step > EPS)
+    auto iterations = 0;
+    while (step > EPS && iterations < 1000)
     {
         TSP next_tsp = tsp;
         for (int i=0; i<n; i++)
@@ -83,8 +84,6 @@ TSP MST_GradientDescentTransform(TSP tsp, int root)
                         next_tsp[j][i] += (mst.deg[i]-2)*step;
                     }
         MST next_mst(next_tsp, root);
-
-//        cout<<mst.weight<<" "<<next_mst.weight<<" "<<step<<"\n";
         if (next_mst.weight > mst.weight)
         {
             tsp = next_tsp;

@@ -74,10 +74,13 @@
 		<Unit filename="common.cpp" />
 		<Unit filename="common.h" />
 		<Unit filename="greedy_edge_picker.cpp" />
+		<Unit filename="local_dp_optimizer.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mst.cpp" />
 		<Unit filename="mst.h" />
 		<Unit filename="nearest_neighbor.cpp" />
+		<Unit filename="smart_set.cpp" />
+		<Unit filename="smart_set.h" />
 		<Unit filename="solvers.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

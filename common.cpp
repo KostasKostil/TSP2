@@ -140,6 +140,18 @@ TSP TSP::LoadPlaneTSP(std::string filename, Metric metric)
     ifstream fin(filename);
     return LoadPlaneTSP(fin, metric);
 }
+TSP TSP::GenerateRandom(int n, double AMAX, Metric metric)
+{
+    stringstream strm;
+    strm<<fixed<<setprecision(10);
+    strm<<n<<"\n";
+    for (int i=0; i<n; i++)
+    {
+        strm<<rng()*AMAX/UINT_MAX<<" ";
+        strm<<rng()*AMAX/UINT_MAX<<"\n";
+    }
+    return TSP::LoadPlaneTSP(strm, metric);
+}
 
 /// DSU
 DSU::DSU(){}

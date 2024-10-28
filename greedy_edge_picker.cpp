@@ -32,7 +32,7 @@ std::vector<int> SolveGreedyEdgePicker(const TSP& tsp, int final_dp_size)
 
 // generating dp endpoints
     m = comps;
-    map<int, vector<int> > mp;
+    unordered_map<int, vector<int> > mp;
     for (int i=0; i<n; i++)
     {
         if (g[i].size() == 0)
@@ -40,11 +40,13 @@ std::vector<int> SolveGreedyEdgePicker(const TSP& tsp, int final_dp_size)
         if (g[i].size() <= 1)
             mp[dsu.Get(i)].pb(i);
     }
-    vector<array<int, 2> > pos;
+    vector<int> pos;
+    pos.reserve(2*m);
     for (auto [x, v] : mp)
     {
         Assert(v.size() == 2, "SolveGreedyEdgePicker: path is not a path");
-        pos.pb({v[0], v[1]});
+        pos.pb(v[0]);
+        pos.pb(v[1]);
     }
 
 // initializing dp
@@ -60,14 +62,14 @@ std::vector<int> SolveGreedyEdgePicker(const TSP& tsp, int final_dp_size)
 
 // calculating dp
     for (int i=0; i<2*m; i++)
-        dp[i][(1<<m)-1] = tsp[pos[i/2][i%2]][pos[0][0]];
-    for (int mask=(1<<m)-2; mask>=0; mask--)
+        dp[i][(1<<m)-1] = tsp[pos[i]][pos[0]];
+    for (int mask=(1<<m)-1; mask>0; mask-=2)
         for (int from=0; from<2*m; from++)
-            if (((mask>>(from/2))&1)==1)
-                for (int to=0; to<2*m; to++)
-                    if (((mask>>(to/2))&1)==0)
-                    {
-                        double nt = dp[to][mask | (1<<(to/2))] + tsp[pos[from/2][from%2]][pos[to/2][1-to%2]];
+            if ((((mask>>(from/2))&1)==1) && ((mask != 1) == (from != 1))) //*it is possible to decrease m by one, but it only helps with
+                for (int to=0; to<2*m; to++)                               // memory allocation since this check ensures that only
+                    if (((mask>>(to/2))&1)==0)                             // necessary dp states will be evaluated. Decreased version
+                    {                                                      // can be seen in local_dp_optimizer.cpp
+                        double nt = dp[to][mask | (1<<(to/2))] + tsp[pos[from]][pos[to^1]];
                         if (nt < dp[from][mask])
                         {
                             dp[from][mask] = nt;
@@ -81,7 +83,7 @@ std::vector<int> SolveGreedyEdgePicker(const TSP& tsp, int final_dp_size)
     vector<int> path;
     while (true)
     {
-        path.pb(pos[v/2][v%2]);
+        path.pb(pos[v]);
         v = p[v][mask];
         mask |= (1<<(v/2));
         if (v == -1)
