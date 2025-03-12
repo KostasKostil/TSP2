@@ -2,14 +2,15 @@
 1730146353 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\common.cpp
 	"common.h"
 
-1730143958 c:\users\kostya\desktop\cb projects\sfml\tsp2\common.h
+1741772414 c:\users\kostya\desktop\cb projects\sfml\tsp2\common.h
 	<bits/stdc++.h>
 
-1730144429 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\main.cpp
+1741786041 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\main.cpp
 	"common.h"
 	"mst.h"
 	"solvers.h"
 	"smart_set.h"
+	"mst2.h"
 
 1730144186 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\mst.cpp
 	"mst.h"
@@ -41,4 +42,15 @@
 
 1729863988 c:\users\kostya\desktop\cb projects\sfml\tsp2\smart_set.h
 	<bits/stdc++.h>
+
+1741786636 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\mst2.cpp
+	"mst2.h"
+	"common.h"
+
+1741786627 c:\users\kostya\desktop\cb projects\sfml\tsp2\mst2.h
+	<bits/stdc++.h>
+
+1741786623 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\mst2_bruteforce.cpp
+	"mst2.h"
+	"common.h"
 

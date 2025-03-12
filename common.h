@@ -6,7 +6,7 @@
 
 inline std::mt19937 rng(time(0));
 const double EPS = 1e-9;
-const double INF = 1e9;   // for numerical methods
+const double INF = 1e9;    // for numerical methods
 const double INFDP = 1e36; // for dp initialization
 
 void Assert(bool flag, std::string message);

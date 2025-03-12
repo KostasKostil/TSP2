@@ -78,6 +78,9 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="mst.cpp" />
 		<Unit filename="mst.h" />
+		<Unit filename="mst2.cpp" />
+		<Unit filename="mst2.h" />
+		<Unit filename="mst2_bruteforce.cpp" />
 		<Unit filename="nearest_neighbor.cpp" />
 		<Unit filename="smart_set.cpp" />
 		<Unit filename="smart_set.h" />
