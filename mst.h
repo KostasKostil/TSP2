@@ -13,6 +13,10 @@ struct MST
     // - root has degree 2
     // - if you remove root it remains connected
     MST(const TSP& tsp, int root = -1);
+
+    MST();
 };
 
 TSP MST_GradientDescentTransform(TSP tsp, int root = 0);
+
+TSP ComputeMST_Matrix(TSP tsp, int root);

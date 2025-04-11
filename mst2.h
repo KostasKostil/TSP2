@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "common.h"
 
 struct Edge
 {
@@ -47,3 +48,11 @@ public:
 };
 
 void MST2_Test();
+
+struct MST2_GradientDescentResult
+{
+    bool found;
+    double estimate;
+    std::vector<int> path;
+};
+MST2_GradientDescentResult MST2_GradientDescentEstimate(TSP tsp, int k, int root = 0);

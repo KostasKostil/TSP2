@@ -51,11 +51,6 @@ void MST2::Initialization() // generates 0-th tree
         if (T[0][i])
             UpdateQ(0, i);
     SetQopt(0);
-
-    cout<<"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n";
-    for (int i=0; i<m; i++)
-        cout<<i<<" "<<Q[0][i]<<"\n";
-    cout<<Qopt[0]<<"\n";
 }
 
 bool MST2::Iteration(int k) // calculates k-th tree using [0, k-1]th trees
@@ -65,7 +60,6 @@ bool MST2::Iteration(int k) // calculates k-th tree using [0, k-1]th trees
         if (Qopt[i] != -1)
             if (I == -1 || W[i] + Cost(Q[i][Qopt[i]], Qopt[i]) < W[I] + Cost(Q[I][Qopt[I]], Qopt[I]))
                 I = i;
-    cout<<"I "<<I<<"\n";
     if (I == -1)
         return false;
     int i = I;
@@ -117,10 +111,8 @@ std::vector<std::pair<double, int> > MST2::CalcPrefixMaximas(int k, int v, int p
     vector<pair<double, int> > ans(n, {-INFDP, -2});
     ans[v] = {-INFDP, -1};
 
-    cout<<"IN "<<k<<" "<<v<<" "<<p<<"\n";
     auto dfs = [&](auto&& self, int v, int p) -> void
     {
-        cout<<"DFS "<<v<<"\n";
         for (auto [u, id] : g[v])
             if (u != p && T[k][id])
             {
@@ -141,12 +133,6 @@ void MST2::UpdateQ(int k, int f)
     int V = ed[f].v;
     auto prefmaxU = CalcPrefixMaximas(k, U, V);
     auto prefmaxV = CalcPrefixMaximas(k, V, U);
-    for (int i=0; i<m; i++)
-        cout<<T[k][i];
-    cout<<"\n";
-    cout<<U<<" "<<V<<"\n";
-    for (int i=0; i<n; i++)
-        cout<<i<<" "<<prefmaxU[i].fi<<" "<<prefmaxU[i].se<<" "<<prefmaxV[i].fi<<" "<<prefmaxV[i].se<<"\n";
 
     for (int id=0; id<m; id++)
         if (!T[k][id] && !out[k][id])
@@ -169,5 +155,4 @@ void MST2::UpdateQ(int k, int f)
 
             Q[k][id] = best.se;
         }
-    cout<<"E"<<endl;
 }

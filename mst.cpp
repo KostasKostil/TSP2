@@ -2,15 +2,16 @@
 
 using namespace std;
 
+MST::MST(){}
 MST::MST(const TSP& tsp, int root)
 {
     int n = tsp.n;
-    Require(root >= -1 && root < n, "TSP constructor: incorrect root value");
+    Require(root >= -1 && root < n, "MST constructor: incorrect root value " + ConvertToString(root) + "/" + ConvertToString(n));
     weight = 0;
     deg.assign(n, 0);
     g.resize(n);
 
-    vector<int> best(n, 0);
+    vector<int> best(n, -1);
     vector<bool> used(n, false);
 
     auto add_edge = [&](int u, int v)
@@ -27,12 +28,12 @@ MST::MST(const TSP& tsp, int root)
         used[v] = 1;
         for (int i=0; i<n; i++)
             if (!used[i])
-                if (tsp[i][v] < tsp[i][best[i]])
+                if (best[i] == -1 || tsp[i][v] < tsp[i][best[i]])
                     best[i] = v;
     };
     if (root != -1)
         used[root] = 1;
-    int initial_vertex = 1;
+    int initial_vertex = 0;
     if (initial_vertex == root)
         initial_vertex++;
     add(initial_vertex);
@@ -68,11 +69,15 @@ MST::MST(const TSP& tsp, int root)
 
 TSP MST_GradientDescentTransform(TSP tsp, int root)
 {
+    double alpha = 0.97;
+    int limit = 1000;
+
     int n = tsp.n;
     double step = INF;
     MST mst = MST(tsp, root);
     auto iterations = 0;
-    while (step > EPS && iterations < 1000)
+
+    while (step > EPS && iterations < limit)
     {
         TSP next_tsp = tsp;
         for (int i=0; i<n; i++)
@@ -88,12 +93,13 @@ TSP MST_GradientDescentTransform(TSP tsp, int root)
         {
             tsp = next_tsp;
             mst = next_mst;
-            step *= 2;
         }
         else
         {
-            step /= 2;
+            step *= alpha;
         }
+
+        iterations++;
     }
     return tsp;
 }

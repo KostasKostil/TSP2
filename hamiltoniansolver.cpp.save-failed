@@ -1,0 +1,121 @@
+#include "solvers.h"
+
+using namespace std;
+
+class PermReverse
+{
+public:
+    std::vector<int> perm;
+    std::vector<int> inv;
+
+    PermReverse(const std::vector<int>& p) : perm(p), inv(p.size())
+    {
+        int n = perm.size();
+        for (int i = 0; i < n; ++i)
+            inv[perm[i]] = i;
+    }
+
+    inline void Reverse(int r)
+    {
+        std::reverse(perm.begin(), perm.begin() + r);
+        for (int i = 0; i < r; ++i)
+            inv[perm[i]] = i;
+    }
+};
+
+std::vector<int> SolveHamiltonian(const TSP& tsp)
+{
+    typedef pair<double, pair<int, int> > edge;
+    edge e0;
+    e0.fi = -INFDP;
+
+    auto get = [&](int i, int j) -> edge
+    {
+        return { tsp[i][j], {min(i, j), max(i, j)} };
+    };
+
+    int n = tsp.n;
+    PermReverse p(SolveGreedyAdder(tsp));
+
+    vector<vector<edge> > G(n);
+    for (int i=0; i<n; i++)
+        for (int j=i+1; j<n; j++)
+        {
+            G[i].pb(get(i, j));
+            G[j].pb(get(i, j));
+        }
+
+    pair<double, vector<int> > best = {tsp.Length(p.perm), p.perm};
+    while (true)
+    {
+        edge del = e0;
+        {   // calculating and deleting maximal edge of current cycle
+            for (int i=0; i<n; i++)
+                del = max(del, get(p.perm[i], p.perm[(i+1)%n]));
+            int a = del.se.fi;
+            int b = del.se.se;
+            a = p.inv[a];
+            b = p.inv[b];
+            if (b != (a+1)%n)
+                swap(a, b);
+            Assert(b == (a+1)%n, "a and b are not adjacent");
+
+            if (a != n-1)
+            {
+                p.Reverse(b);
+                p.Reverse(n);
+                p.Reverse(n-b);
+            }
+        }
+
+        auto gen_rnd = [&](int i)
+        {
+            int v = -1;
+            while (!G[i].empty())
+            {
+                int j = rng()%G[i].size();
+                if (G[i][j] >= del)
+                {
+                    swap(G[i][j], G[i].back());
+                    G[i].pop_back();
+                    continue;
+                }
+
+                v = G[i][j].se.fi;
+                if (v == i)
+                    v = G[i][j].se.se;
+                break;
+            }
+            return v;
+        };
+
+        bool ok = false;
+        for (int _=0; _<1e4; _++)
+        {   // trying to improve path
+            int v = p.perm[0];
+            int u = -1;
+
+            while (G[v].size() > 2)
+            {
+                u = gen_rnd(v);
+                if (u == p.perm[1])
+                    continue;
+                break;
+            }
+            if (G[v].size() <= 2 || u == -1)
+                break;
+            p.Reverse(p.inv[u]);
+
+            best = max(best, {tsp.Length(p.perm), p.perm});
+
+            if (get(p.perm[0], p.perm.back()) < del)
+            {
+                ok = true;
+                break;
+            }
+        }
+        if (!ok)
+            break;
+    }
+    return best.se;
+}

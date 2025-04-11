@@ -103,7 +103,7 @@ void MST2_Test()
     LargeHandTest();
     while (true)
     {
-        Stress(7, 1000);
+        Stress(7, 10000);
         cerr<<"@";
     }
 }

@@ -71,9 +71,17 @@
 		<Linker>
 			<Add directory="C:/Program Files/CodeBlocks/SFML 2.6.1/lib" />
 		</Linker>
+		<Unit filename="__experimental.cpp" />
+		<Unit filename="collect_stats.cpp" />
 		<Unit filename="common.cpp" />
 		<Unit filename="common.h" />
+		<Unit filename="estimate_mst.cpp" />
+		<Unit filename="greedy_adder.cpp" />
 		<Unit filename="greedy_edge_picker.cpp" />
+		<Unit filename="hamiltoniancycle.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="hamiltoniansolver.cpp" />
 		<Unit filename="local_dp_optimizer.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mst.cpp" />
@@ -81,10 +89,15 @@
 		<Unit filename="mst2.cpp" />
 		<Unit filename="mst2.h" />
 		<Unit filename="mst2_bruteforce.cpp" />
+		<Unit filename="mst2_descent.cpp" />
+		<Unit filename="mst_matrix.cpp" />
 		<Unit filename="nearest_neighbor.cpp" />
 		<Unit filename="smart_set.cpp" />
 		<Unit filename="smart_set.h" />
 		<Unit filename="solvers.h" />
+		<Unit filename="tsplib_names.h" />
+		<Unit filename="visualizer.cpp" />
+		<Unit filename="visualizer.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

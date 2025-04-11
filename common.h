@@ -4,10 +4,14 @@
 #define se second
 #define pb push_back
 
-inline std::mt19937 rng(time(0));
+inline std::mt19937 rng(47);
 const double EPS = 1e-9;
 const double INF = 1e9;    // for numerical methods
 const double INFDP = 1e36; // for dp initialization
+
+double Clock();
+std::string ConvertToString(int x);
+std::string ConvertToString(double x);
 
 void Assert(bool flag, std::string message);
 void Assert(bool flag, std::function<void(std::ostream&)> message);
@@ -43,6 +47,8 @@ struct TSP : std::vector<std::vector<double> >
 
     static TSP LoadPlaneTSP(std::istream& in, Metric metric = Metric::Euclidean);
     static TSP LoadPlaneTSP(std::string filename, Metric metric = Metric::Euclidean);
+    static TSP LoadHCP(std::string filename);
+    static TSP LoadTSPLIB(std::string filename);
     static TSP GenerateRandom(int n, double AMAX = 1e5, Metric metric = Metric::Euclidean);
 };
 
@@ -53,3 +59,5 @@ struct DSU
     int Get(int v);
     void Unite(int u, int v);
 };
+
+void __experiment();

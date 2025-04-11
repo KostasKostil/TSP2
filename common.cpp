@@ -41,6 +41,26 @@ void Require(bool flag, std::function<void(std::ostream&)> message)
     }
 }
 
+double Clock()
+{
+    static const auto startTime = chrono::high_resolution_clock::now();
+    auto currentTime = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = currentTime - startTime;
+    return elapsed.count();
+}
+std::string ConvertToString(int x)
+{
+    stringstream ss;
+    ss<<x;
+    return ss.str();
+}
+std::string ConvertToString(double x)
+{
+    stringstream ss;
+    ss<<x;
+    return ss.str();
+}
+
 double Distance(Point A, Point B)
 {
     return hypot(A.x-B.x, A.y-B.y);
@@ -174,3 +194,88 @@ void DSU::Unite(int u, int v)
     if (dsu_rng()&1) swap(u, v);
     p[u] = v;
 }
+
+/// TSPLIB
+
+TSP TSP::LoadHCP(std::string filename)
+{
+    ifstream fin(filename);
+    Require(bool(fin), "LoadHCP incorrect file " + filename);
+    string s;
+
+    TSP tsp;
+    while (fin>>s)
+    {
+        if (s == "DIMENSION")
+        {
+            fin>>s;
+            if (s == ":") fin>>s;
+            stringstream ss;
+            ss<<s;
+            int n;
+            ss>>n;
+
+            tsp.n = n;
+            tsp.assign(n, vector<double>(n, 1.0));
+            for (int i=0; i<n; i++) tsp[i][i] = 0.0;
+        }
+        else if (s == "EDGE_DATA_SECTION")
+        {
+            int x, y;
+            while (true)
+            {
+                fin>>x;
+                if (x == -1)
+                    break;
+                fin>>y;
+
+                x--;
+                y--;
+                tsp[x][y] = tsp[y][x] = 0;
+            }
+        }
+    }
+    return tsp;
+}
+
+TSP TSP::LoadTSPLIB(std::string filename)
+{
+    ifstream fin(filename);
+    Require(bool(fin), "LoadHCP incorrect file " + filename);
+    string s;
+
+    TSP tsp;
+    while (fin>>s)
+    {
+        if (s == "DIMENSION")
+        {
+            fin>>s;
+            if (s == ":") fin>>s;
+            stringstream ss;
+            ss<<s;
+            int n;
+            ss>>n;
+
+            tsp.n = n;
+            tsp.assign(n, vector<double>(n, 1.0));
+            for (int i=0; i<n; i++) tsp[i][i] = 0.0;
+        }
+        else if (s == "EDGE_DATA_SECTION")
+        {
+            int x, y;
+            while (true)
+            {
+                fin>>x;
+                if (x == -1)
+                    break;
+                fin>>y;
+
+                x--;
+                y--;
+                tsp[x][y] = tsp[y][x] = 0;
+            }
+        }
+    }
+    return tsp;
+}
+
