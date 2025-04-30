@@ -28,6 +28,7 @@ int main()
     /// calculating edges which are in top-10 for both endpoints
     int n = tsp.size();
     auto g = ExtractEdges(tsp, 10);
+    auto gex = ExtractEdges(tsp, 100);
     g = FilterEdges(g, 10);
     TourStats(g, tour);
     GlobalStats(g, 10);
@@ -62,9 +63,26 @@ int main()
     GlobalStats(g, 10);
     g = FilterEdges(g, 7);
 
+    while (true)
+    {
+//        auto t = InsertionTour(tsp, gex);
+        auto t = RandomTour(n);
+//        auto t = LoadTour(n, "data/5762191.txt");
+        LKH lkh(tsp, g, W);
+        lkh.Main(t);
+
+        int L = Length(tsp, t);
+        stringstream ss; ss<<L;
+        ofstream fout("tours/" + ss.str() + ".txt");
+        for (int i : t) fout<<i<<" ";
+        fout<<"\n";
+    }
+    return 0;
+
     /// solver
     Common::Wflag = true;
-    vector<int> t = LoadTour(n, "data/5759058.txt");
+//    vector<int> t = LoadTour(n, "data/5762191.txt");
+//    shuffle(t.begin(), t.end(), rng);
 
 //    auto wa = Wevaluate(tsp, g, t);
 //    for (int i=0; i<n; i++) Common::W[i] += wa[i];
@@ -87,12 +105,11 @@ int main()
 //        return 0;
 //    }
 
-    cout<<"STARTING PROCESSING OF TOUR. LENGTH = "<<Length(tsp, t)<<"\n";
+//    cout<<"STARTING PROCESSING OF TOUR. LENGTH = "<<Length(tsp, t)<<"\n";
 
-    assert(int(set<int>(t.begin(), t.end()).size()) == n);
+//    assert(int(set<int>(t.begin(), t.end()).size()) == n);
 //    FeasibleLKH(tsp, g, G, t);
-
-    SequentialLKH(tsp, g, G, t);
+//    SequentialLKH(tsp, g, G, t);
 
     return 0;
 

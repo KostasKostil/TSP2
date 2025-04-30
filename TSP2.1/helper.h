@@ -32,32 +32,45 @@ private:
     sf::Font* font;
 };
 
-class PermReverse
+class IPermReverse
+{
+public:
+    virtual ~IPermReverse() = default;
+    virtual void Cut(int l) = 0;
+    virtual void Reverse(int l, int r) = 0;
+    virtual void Undo() = 0;
+    virtual void Apply() = 0;
+    virtual int Where(int x) = 0;
+    virtual int At(int i) = 0;
+};
+class PermReverse : public IPermReverse
 {
 public:
     PermReverse(std::vector<int> p);
-    void Cut(int l); // shifts in such a way that l -> l+1 becomes 0 -> n-1
-    void Reverse(int l, int r);
-    void Undo();
-    void Apply();
-    int Where(int x);
-    int At(int i);
+    ~PermReverse();
+    void Cut(int l) override; // shifts in such a way that l -> l+1 becomes 0 -> n-1
+    void Reverse(int l, int r) override;
+    void Undo() override;
+    void Apply() override;
+    int Where(int x) override;
+    int At(int i) override;
 private:
     int n, shift;
-    std::vector<int> perm;
-    std::vector<int> inv;
-    std::vector<std::pair<int, int> > changes;
+    int* perm;
+    int* inv;
+    int m;
+    std::pair<int, int>* changes;
 };
-class PermReverse2
+class PermReverse2 : public IPermReverse
 {
 public:
-    PermReverse2(vector<int> p);
-    void Cut(int l); // shifts in such a way that l -> l+1 becomes 0 -> n-1
-    void Reverse(int l, int r);
-    void Undo();
-    void Apply();
-    int Where(int x);
-    int At(int i);
+    PermReverse2(std::vector<int> p);
+    void Cut(int l) override; // shifts in such a way that l -> l+1 becomes 0 -> n-1
+    void Reverse(int l, int r) override;
+    void Undo() override;
+    void Apply() override;
+    int Where(int x) override;
+    int At(int i) override;
 private:
     static const int limit = 5; // maximal length of segment for naive processing
     int n;
@@ -72,13 +85,14 @@ private:
 
 typedef unsigned int uint;
 typedef unsigned long long ull;
-class UnorderedSet
+ull Hash(uint h);
+class InsertionSet
 {
 public:
-    UnorderedSet();
-    ~UnorderedSet();
-    UnorderedSet(const UnorderedSet&) = delete;
-    UnorderedSet& operator=(const UnorderedSet&) = delete;
+    InsertionSet();
+    ~InsertionSet();
+    InsertionSet(const InsertionSet&) = delete;
+    InsertionSet& operator=(const InsertionSet&) = delete;
     void Insert(ull num);
     bool Count(ull num);
     void Clear();
@@ -86,14 +100,75 @@ public:
     bool Overflow();
 private:
     uint version, sz;
+    struct cell
+    {
+        uint version;
+        ull value;
+    };
+    cell* a;
+};
+class PersistentSet
+{
+public:
+    PersistentSet();
+    ~PersistentSet();
+    PersistentSet(const PersistentSet&) = delete;
+    PersistentSet& operator=(const PersistentSet&) = delete;
+    void Insert(ull num);
+    void Undo();
+    bool Count(ull num);
+    void Clear();
+    int Size();
+private:
+    uint sz;
     uint* v;
     ull* a;
 };
 class SetHash
 {
 public:
-    void Flip(unsigned int num);
-    u128 GetHash();
+    void Flip(uint num);
+    ull GetHash();
 private:
-    u128 res = 0;
+    ull res = 0;
+};
+
+class PermReverseTreap : public IPermReverse
+{
+public:
+    PermReverseTreap(const std::vector<int>& V);
+    void Cut(int l) override;
+    void Reverse(int l, int r) override;
+    void Undo() override;
+    void Apply() override;
+    int Where(int x) override;
+    int At(int i) override;
+
+private:
+    struct Node
+    {
+        int val;
+        int prior;
+        int size;
+        bool rev;
+        Node* l;
+        Node* r;
+        Node* parent;
+        Node(int v);
+    };
+
+    int n;
+    Node*                          root;
+    std::unordered_map<int, Node*> val_to_node;
+
+    int   getSize(Node* t);
+    void  update(Node* t);
+    void  push(Node* t);
+    void  split(Node* t, int k, Node*& l, Node*& r);
+    Node* merge(Node* l, Node* r);
+    void  pushToRoot(Node* t);
+    int   getPos(Node* t);
+    Node* kth(Node* t, int k);
+
+    std::vector<std::pair<int, int> > changes;
 };

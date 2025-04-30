@@ -484,3 +484,70 @@
 1745857802 source:c:\users\kostya\desktop\cb projects\sfml\tsp2.1\permreverse2.cpp
 	"common.h"
 
+1745535458 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\alphanearness.cpp
+	"common.h"
+
+1746046957 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\common.h
+	<bits/stdc++.h>
+	<SFML/Graphics.hpp>
+	"helper.h"
+
+1745937420 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\helper.h
+
+1745525511 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\dsu.cpp
+	"common.h"
+
+1745514117 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\extractedges.cpp
+	"common.h"
+
+1745525095 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\filteredges.cpp
+	"common.h"
+
+1745792227 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\lkh_feasible.cpp
+	"common.h"
+
+1746039486 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\lkh_sequential.cpp
+	"common.h"
+
+1746048403 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\lkh_ultimate.cpp
+	"common.h"
+
+1746043726 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\main.cpp
+	"common.h"
+
+1745855352 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\mst_gradesc.cpp
+	"common.h"
+
+1745936065 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\permreverse.cpp
+	"common.h"
+
+1745857802 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\permreverse2.cpp
+	"common.h"
+
+1745768289 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\reader.cpp
+	"common.h"
+
+1745513193 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\time.cpp
+	"common.h"
+
+1745566734 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\tourstats.cpp
+	"common.h"
+
+1745713420 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\visualizer.cpp
+	"common.h"
+
+1745848523 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\wevaluate.cpp
+	"common.h"
+
+1745884876 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\hashes.cpp
+	"common.h"
+
+1746046999 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\lkh_ultimate_helper.cpp
+	"common.h"
+
+1745937429 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\permreversetreap.cpp
+	"common.h"
+
+1746005196 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2.1\insertiontour.cpp
+	"common.h"
+

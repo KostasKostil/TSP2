@@ -78,13 +78,16 @@
 		<Unit filename="filteredges.cpp" />
 		<Unit filename="hashes.cpp" />
 		<Unit filename="helper.h" />
+		<Unit filename="insertiontour.cpp" />
 		<Unit filename="lkh_feasible.cpp" />
 		<Unit filename="lkh_sequential.cpp" />
 		<Unit filename="lkh_ultimate.cpp" />
+		<Unit filename="lkh_ultimate_helper.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mst_gradesc.cpp" />
 		<Unit filename="permreverse.cpp" />
 		<Unit filename="permreverse2.cpp" />
+		<Unit filename="permreversetreap.cpp" />
 		<Unit filename="reader.cpp" />
 		<Unit filename="time.cpp" />
 		<Unit filename="tourstats.cpp" />

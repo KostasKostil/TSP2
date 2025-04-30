@@ -4,12 +4,22 @@ using namespace std;
 
 PermReverse::PermReverse(std::vector<int> p)
 {
-    inv = perm = p;
-    n = perm.size();
-    perm.reserve(2*n);
+    n = p.size();
+    perm = new int[n];
+    inv = new int[n];
+    for (int i=0; i<n; i++)
+        perm[i] = p[i];
     for (int i=0; i<n; i++)
         inv[perm[i]] = i;
+    m = 0;
+    changes = new pair<int, int>[n];
     shift = 0;
+}
+PermReverse::~PermReverse()
+{
+    delete[] perm;
+    delete[] inv;
+    delete[] changes;
 }
 void PermReverse::Cut(int l)
 {
@@ -26,40 +36,55 @@ void PermReverse::Reverse(int l, int r)
         l -= n;
         r -= n;
     }
-    changes.push_back({l, r});
+    changes[m] = {l, r};
+    m++;
 }
 void PermReverse::Undo()
 {
-    changes.pop_back();
+    m--;
 }
 void PermReverse::Apply()
 {
-    for (auto [l, r] : changes)
+    for (int chid = 0; chid < m; chid++)
     {
+        auto [l, r] = changes[chid];
         if (r <= n)
-            reverse(perm.begin() + l, perm.begin() + r);
+        {
+            int l0 = l;
+            int r0 = r-1;
+            for (int i=0; i<(r-l)/2; i++)
+            {
+                swap(perm[l0], perm[r0]);
+                inv[perm[l0]] = l0;
+                inv[perm[r0]] = r0;
+                l0++;
+                r0--;
+            }
+        }
         else
         {
-            r -= n;
-            for (int i=0; i<r; i++)
-                perm.push_back(perm[i]);
-            reverse(perm.begin() + l, perm.begin() + r + n);
-            for (int i=r-1; i>=0; i--)
+            int l0 = l;
+            int r0 = (r-1)-n;
+            for (int i=0; i<(r-l)/2; i++)
             {
-                perm[i] = perm.back();
-                perm.pop_back();
+                if (l0 == n) l0 = 0;
+                if (r0 == -1) r0 = n-1;
+                swap(perm[l0], perm[r0]);
+                inv[perm[l0]] = l0;
+                inv[perm[r0]] = r0;
+                l0++;
+                r0--;
             }
         }
     }
-    for (int i=0; i<n; i++)
-        inv[perm[i]] = i;
-    changes.clear();
+    m = 0;
 }
 int PermReverse::Where(int x)
 {
     x = inv[x];
-    for (auto [l, r] : changes)
+    for (int chid = 0; chid < m; chid++)
     {
+        auto [l, r] = changes[chid];
         if (l<=x && x<r)
         {
             x = r-1-(x-l);
@@ -80,9 +105,9 @@ int PermReverse::At(int i)
 {
     int x = i+shift;
     if (x >= n) x -= n;
-    for (int _=int(changes.size())-1; _>=0; _--)
+    for (int chid = m-1; chid >= 0; chid--)
     {
-        auto [l, r] = changes[_];
+        auto [l, r] = changes[chid];
         if (l<=x && x<r)
         {
             x = r-1-(x-l);

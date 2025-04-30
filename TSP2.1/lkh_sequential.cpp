@@ -1,23 +1,23 @@
 #include "common.h"
 
-static int branch_limit = 40;
-static int badguys_limit = 1;
+static int branch_limit = -1;
+static int badguys_limit = 3;
 static int depth_limit = 1e9;
-static int cross_limit = 1e9;
+static int cross_limit = 2;
 
 static TSP tsp;
 static vector<vector<int> > g;
 
-typedef PermReverse2 PERM_REVERSE;
+typedef PermReverse PERM_REVERSE;
 
 static int n;
 static PERM_REVERSE* pr;
-static unordered_set<int> changed;
 
 static vector<int> badguys;
 
 static SetHash state;
-static UnorderedSet states;
+static InsertionSet states;
+static PersistentSet changed;
 
 static int num(int u, int v)
 {
@@ -25,26 +25,29 @@ static int num(int u, int v)
 }
 static int dynamic_branch_limit(int depth)
 {
+    if (depth > 111) return 0;
     return max(1, branch_limit - depth);
 //    if (depth <= branch_limit) return 1e9;
 //    else return 1;
 //    return 3;
 }
 
+map<int, int> mp;
 static bool cross(int balance)
 {
     if (badguys.size() > 2)
         return false;
     int lim = badguys.back();
 
-//    int sz = min(lim, n - lim);
-//    if (sz <= 10)
-//    return false;
+    int sz = min(lim, n - lim);
+    if (sz <= 10)
+        return false;
 //    if (balance <= 10)
 
     PERM_REVERSE* oldpr = nullptr;
     bool rev = false;
 
+//    mp[balance]++;
     double LIM = 2e3;
     if (lim < LIM)
     {
@@ -151,9 +154,9 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
 //        for (auto [x, y] : ed0)
 //        cout<<"{"<<x<<", "<<y<<"},\n";
     }
-    assert(pr->At(0) == first_v);
-    assert(pr->At(last_id) == last_v);
-    assert(last_id + 1 == badguys.back());
+//    assert(pr->At(0) == first_v);
+//    assert(pr->At(last_id) == last_v);
+//    assert(last_id + 1 == badguys.back());
 
     int current_cycle_balance = balance - Dist(tsp, first_v, last_v);
     if (current_cycle_balance > 0 && badguys.back() == n)
@@ -187,12 +190,13 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
         int new_balance = balance - Dist(tsp, first_v, i);
         if (new_balance <= 0)
             continue;
-        if (changed.count(num(first_v, i)))
+        if (changed.Count(num(first_v, i)))
             continue;
         int pos = pr->Where(i);
         if (pos == 1) continue; // can we be one vertex?
 
         state.Flip(num(first_v, i));
+        changed.Insert(num(first_v, i));
 
         if (pos > last_id) // we entered bad guy
         {
@@ -219,15 +223,14 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
                 if (pos + delta >= badguys.back()) continue; // too right
 
                 int u = pr->At(pos + delta);
-                if (changed.count(num(i, u)))
+                if (changed.Count(num(i, u)))
                     continue;
 
                 if (delta == -1)
                 {
                     pr->Reverse(0, pos);
                     pr->Reverse(pos-1-last_id, badguys.back());
-                    changed.insert(num(first_v, i));
-                    changed.insert(num(i, u));
+                    changed.Insert(num(i, u));
 
                     branches++;
                     state.Flip(num(u, i));
@@ -235,8 +238,7 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
                         return true;
                     state.Flip(num(u, i));
 
-                    changed.erase(num(first_v, i));
-                    changed.erase(num(i, u));
+                    changed.Undo();
                     pr->Undo();
                     pr->Undo();
                 }
@@ -245,8 +247,7 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
                     pr->Reverse(0, pos+1);
                     pr->Reverse(pos-last_id, badguys.back());
                     pr->Reverse(0, badguys.back() - (last_id+1));
-                    changed.insert(num(first_v, i));
-                    changed.insert(num(i, u));
+                    changed.Insert(num(i, u));
 
                     branches++;
 
@@ -258,8 +259,7 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
                     pr->Undo();
                     pr->Undo();
                     pr->Undo();
-                    changed.erase(num(first_v, i));
-                    changed.erase(num(i, u));
+                    changed.Undo();
                 }
             }
             pr->Undo();
@@ -269,11 +269,10 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
         {
             { // feasible
                 int u = pr->At(pos-1);
-                if (!changed.count(num(i, u)))
+                if (!changed.Count(num(i, u)))
                 {
                     pr->Reverse(0, pos);
-                    changed.insert(num(first_v, i));
-                    changed.insert(num(i, u));
+                    changed.Insert(num(i, u));
 
                     branches++;
 
@@ -289,8 +288,7 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
                     ed0.pop_back();
 
                     pr->Undo();
-                    changed.erase(num(first_v, i));
-                    changed.erase(num(i, u));
+                    changed.Undo();
                 }
             }
             if (branches < dynamic_branch_limit(depth))
@@ -298,12 +296,11 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
 //                    if (pos+1 < last_id) // not sure if this is needed
             { // unfeasible
                 int u = pr->At(pos+1);
-                if (!changed.count(num(i, u)))
+                if (!changed.Count(num(i, u)))
                 {
                     pr->Reverse(pos+1, last_id+1);
                     pr->Reverse(0, last_id+1);
-                    changed.insert(num(first_v, i));
-                    changed.insert(num(i, u));
+                    changed.Insert(num(i, u));
                     badguys.push_back(badguys.back() - (pos+1));
 
                     branches++;
@@ -314,13 +311,13 @@ static bool go(int balance, int first_v, int last_id, int last_v, int depth = 0)
                     badguys.pop_back();
                     pr->Undo();
                     pr->Undo();
-                    changed.erase(num(first_v, i));
-                    changed.erase(num(i, u));
+                    changed.Undo();
                 }
             }
         }
 
         state.Flip(num(first_v, i));
+        changed.Undo();
     }
     return false;
 }
@@ -374,7 +371,7 @@ void SequentialLKH(const TSP& _tsp, const vector<vector<int> >& _g, const vector
             candidate_list.pb(pa);
         id = 0;
 
-//        shuffle(candidate_list.begin(), candidate_list.end(), rng);
+        shuffle(candidate_list.begin(), candidate_list.end(), rng);
         return ans;
     };
 
@@ -387,7 +384,6 @@ void SequentialLKH(const TSP& _tsp, const vector<vector<int> >& _g, const vector
 
     while (true)
     {
-
         if (upd > 0)
         if (id == n)
         {
@@ -398,11 +394,12 @@ void SequentialLKH(const TSP& _tsp, const vector<vector<int> >& _g, const vector
             tour.clear();
             for (int i=0; i<n; i++)
                 tour.pb(pr->At(i));
-//            branch_limit++;
+            branch_limit++;
             cout<<"BRANCH_LIMIT = "<<branch_limit<<"\n";
+            PrintMapStats(mp);
             id = 0;
             reset_candidates();
-            exit(0);
+//            exit(0);
             continue;
         }
 
@@ -422,7 +419,8 @@ void SequentialLKH(const TSP& _tsp, const vector<vector<int> >& _g, const vector
         int first_v = pr->At(0);
         int last_id = n-1;
         int last_v = pr->At(last_id);
-        changed.clear();
+        changed.Clear();
+        changed.Insert(num(first_v, last_v));
         badguys = {n};
 
         total++;
@@ -438,19 +436,19 @@ void SequentialLKH(const TSP& _tsp, const vector<vector<int> >& _g, const vector
         {
             upd++;
 
-            tour.clear();
-            for (int i=0; i<n; i++)
-            tour.pb(pr->At(i));
-            cout<<"length="<<Length(tsp, tour)<<" id="<<id<<" upd="<<upd<<" total="<<total<<" branches="<<branch_limit<<"\n";
             double currentTime = Time();
-            if (currentTime - lastOutputTime > 5.0)
+            if (currentTime - lastOutputTime > 2.0 || Length(tsp, tour) < 5760000)
             {
+                tour.clear();
+                for (int i=0; i<n; i++)
+                tour.pb(pr->At(i));
+                cout<<"length="<<Length(tsp, tour)<<" id="<<id<<" upd="<<upd<<" total="<<total<<" branches="<<branch_limit<<"\n";
 //                vis.SetCycle(255, 255, 255, tour);
                 lastOutputTime = currentTime;
+                ofstream fout("data/sequential_lkh.txt");
+                for (int i : tour)
+                    fout<<i<<"\n";
             }
-            ofstream fout("data/sequential_lkh.txt");
-            for (int i : tour)
-                fout<<i<<"\n";
         }
         dstats[dmax]++;
 

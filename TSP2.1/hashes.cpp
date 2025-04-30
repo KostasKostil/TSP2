@@ -1,16 +1,29 @@
 #include "common.h"
 
-static const uint USMASK = (1<<27)-1;
+static const uint ISMASK = (1<<29)-1;
+static const uint PSMASK = (1<<13)-1;
+static const ull  PSZERO = 0xA5B85C5E198ED849ULL;
 
-UnorderedSet::UnorderedSet()
+ull Hash(uint h)
 {
-    s = 0;
-    a = new u128[USMASK + 1];
-    for (uint i=0; i<=USMASK; i++)
-        a[i] = USZERO;
-    v = new uint[USMASK + 1];
+    h ^= h >> 16;
+    h *= 0x85ebca6b;
+    h ^= h >> 13;
+    h *= 0xc2b2ae35;
+    h ^= h >> 16;
+    return h;
 }
-UnorderedSet::~UnorderedSet()
+
+/// InsertionSet
+InsertionSet::InsertionSet()
+{
+    sz = 0;
+    version = 1;
+    a = new cell[ISMASK + 1];
+    for (uint i=0; i<=ISMASK; i++)
+        a[i].version = 0;
+}
+InsertionSet::~InsertionSet()
 {
     if (a != nullptr)
     {
@@ -18,49 +31,108 @@ UnorderedSet::~UnorderedSet()
         a = nullptr;
     }
 }
-void UnorderedSet::Insert(u128 num)
+void InsertionSet::Insert(ull num)
 {
-    uint id = num&USMASK;
-    while (a[id] != USZERO) id = (id+1)&USMASK;
-    a[id] = num;
-    v[s] = id;
-    s++;
+    uint id = num&ISMASK;
+    while (a[id].version == version) id = (id+1)&ISMASK;
+    a[id] = cell{ version, num };
+    sz++;
 }
-bool UnorderedSet::Count(u128 num)
+bool InsertionSet::Count(ull num)
 {
-    uint id = num&USMASK;
+    uint id = num&ISMASK;
     while (true)
     {
-        if (a[id] == USZERO) return false;
-        if (a[id] == num) return true;
-        id = (id+1)&USMASK;
+        if (a[id].version != version) return false;
+        if (a[id].value == num) return true;
+        id = (id+1)&ISMASK;
     }
     return false;
 }
-void UnorderedSet::Clear()
+void InsertionSet::Clear()
 {
-    for (uint i=0; i<s; i++)
-        a[v[i]] = USZERO;
-    s = 0;
+    version++;
+    sz = 0;
+    if (version==0)
+    {
+        for (uint i=0; i<=ISMASK; i++)
+            a[i].version = 0;
+        version = 1;
+    }
 }
-int UnorderedSet::Size()
+int InsertionSet::Size()
 {
-    return s;
+    return sz;
 }
-bool UnorderedSet::Overflow()
+bool InsertionSet::Overflow()
 {
-    return s > (USMASK >> 2);
+    return sz > (ISMASK >> 1);
 }
 
-void SetHash::Flip(unsigned int num)
+/// PersistentSet
+PersistentSet::PersistentSet()
 {
-    u128 h = num;
-    h = h + 0xbf58476d1ce4e5b9ULL;
-    h = (h ^ (h << 64)) * 0x9e3779b97f4a7c15ULL;
-    h ^= h >> 64;
-    res ^= h;
+    sz = 0;
+    a = new ull[PSMASK + 1];
+    for (uint i=0; i<=PSMASK; i++)
+        a[i] = PSZERO;
+    v = new uint[PSMASK + 1];
 }
-u128 SetHash::GetHash()
+PersistentSet::~PersistentSet()
+{
+    if (a != nullptr)
+    {
+        delete[] a;
+        a = nullptr;
+    }
+    if (v != nullptr)
+    {
+        delete[] v;
+        v = nullptr;
+    }
+}
+void PersistentSet::Insert(ull num)
+{
+    uint id = num&PSMASK;
+    while (a[id] != PSZERO) id = (id+1)&PSMASK;
+    a[id] = num;
+    v[sz] = id;
+    sz++;
+    if (sz > (PSMASK >> 1)) exit(921);
+}
+void PersistentSet::Undo()
+{
+    sz--;
+    a[v[sz]] = PSZERO;
+}
+bool PersistentSet::Count(ull num)
+{
+    uint id = num&PSMASK;
+    while (true)
+    {
+        if (a[id] == PSZERO) return false;
+        if (a[id] == num) return true;
+        id = (id+1)&PSMASK;
+    }
+    return false;
+}
+void PersistentSet::Clear()
+{
+    for (uint i=0; i<sz; i++)
+        a[v[i]] = PSZERO;
+    sz = 0;
+}
+int PersistentSet::Size()
+{
+    return sz;
+}
+
+/// SetHash
+void SetHash::Flip(uint num)
+{
+    res ^= Hash(num);
+}
+ull SetHash::GetHash()
 {
     return res;
 }
