@@ -2,6 +2,8 @@
 
 using namespace std;
 
+const bool dpnum = true;
+
 double radius = 1.0;
 typedef pair<int, int> Point;
 
@@ -85,6 +87,8 @@ void Visualizer::Update()
             hold = false;
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
             numbers ^= true;
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::N)
+            vnumbers ^= true;
 
         if (event.type == sf::Event::MouseMoved)
         {
@@ -156,8 +160,10 @@ void Visualizer::Render()
         auto fx = [&](double x){ return fa((x-SX)/DX, dx) * L; };
         auto fy = [&](double y){ return fa((y-SY)/DY, dy) * L; };
 
+        int id = -1;
         for (Point q : tsp)
         {
+            id++;
             double px = fx(q.x)-radius;
             double py = fy(q.y)-radius;
             if (px < -radius || py < -radius || px > L || py > L)
@@ -169,6 +175,27 @@ void Visualizer::Render()
             c.setPosition(px, py);
 
             window->draw(c);
+
+            if (vnumbers && dpnum)
+            {
+                stringstream ss;
+                ss<<Common::DP[id];
+                string s = ss.str();
+
+                sf::Text text;
+                text.setFont(*font);
+                text.setCharacterSize(20);
+                text.setString(s);
+                text.setFillColor(sf::Color(255, 128, 0));
+                text.setOutlineColor(sf::Color::Black);
+                text.setOutlineThickness(0);
+
+                sf::FloatRect bounds = text.getLocalBounds();
+                text.setOrigin(bounds.width / 2, bounds.height / 2);
+
+                text.setPosition(sf::Vector2f(px, py));
+                window->draw(text);
+            }
         }
 
         map<pair<int, int>, array<int, 4> > mp;

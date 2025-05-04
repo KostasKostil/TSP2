@@ -13,6 +13,7 @@ namespace Common
 {
     inline bool Wflag;
     inline vector<int> W;
+    inline vector<int> DP;
 }
 
 struct MSTEdge
@@ -88,11 +89,18 @@ public:
     int L_Output;
     double T_Init;
     double T_Output;
+    int overflow_counter;
+    bool overflown;
+    bool use_dp;
     int updates_since_last_output;
     int tries_since_last_output;
     void CheckForOutput();
     void OutputSkipStage();
     void InitializeGo();
+
+    vector<int> dp; // min balance to live forever
+    int DpSingleRecalc(int v, int depth);
+    void DpFullRecalc();
 
     vector<int> W;
     SetHash state;
@@ -113,10 +121,13 @@ public:
     void GoRandom();
     void GoRandomFor(double t);
     void GoWhile();
+    void GoRandomWhile(double t);
+    void GoWhileDP();
 
     int Length(vector<int> tour);
     vector<int> Tour();
-    void Main(vector<int>& tour);
+    void InitialOptimize(vector<int>& tour);
+    void FinalOptimize(vector<int>& tour);
 };
 
 inline int LKH::Dist(int i, int j)

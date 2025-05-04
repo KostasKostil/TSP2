@@ -17,6 +17,7 @@ private:
     int L;
     bool hold = false;
     bool numbers = false;
+    bool vnumbers = false;
     sf::Vector2f mouse;
 
     double scale = 1.0;

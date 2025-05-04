@@ -47,6 +47,7 @@ bool LKH::Teleport(int balance, int first_v, int last_v, int depth, int teleport
         priority = DistW(a, u) + DistW(v, b) - DistW(u, v);
     sort(options.begin(), options.end());
     options.erase(unique(options.begin(), options.end()), options.end());
+
     reverse(options.begin(), options.end());
     segments = {n};
     for (auto [priority, a, u, v, b] : options)
@@ -154,7 +155,14 @@ bool LKH::Go(int balance, int first_v, int last_v, int depth, int teleport_depth
 
     states.Insert(state.GetHash());
     if (states.Overflow())
+    {
+        if (!overflown)
+        {
+            overflown = true;
+            overflow_counter++;
+        }
         return false;
+    }
     if (depth > 512)
         return false;
 
@@ -165,7 +173,7 @@ bool LKH::Go(int balance, int first_v, int last_v, int depth, int teleport_depth
         {
             if (branches >= branch_limit) break;
             int new_balance = balance - DistW(first_v, i);
-            if (new_balance <= 0)
+            if (new_balance <= (use_dp ? (teleport_depth > 0 ? dp[i] : 0) : 0))
                 continue;
             int inum = num(first_v, i);
             if (changed.Count(inum))
@@ -193,7 +201,7 @@ bool LKH::Go(int balance, int first_v, int last_v, int depth, int teleport_depth
 
                 for (int delta : vector<int>{-1, 1})
                 {
-                    if (branches >= dynamic_branch_limit(depth)) break;
+                    if (branches >= branch_limit) break;
                     if (pos + delta <= last_id) continue; // too left
                     if (pos + delta >= segments.back()) continue; // too right
 
@@ -258,7 +266,7 @@ bool LKH::Go(int balance, int first_v, int last_v, int depth, int teleport_depth
             }
             else
             {
-                if (branches < segments_limit && Segments() <= segments_limit)
+                if (branches < branch_limit && Segments() <= segments_limit)
                 {
                     int u = pr->At(pos-1);
                     int unum = num(i, u);
@@ -285,7 +293,7 @@ bool LKH::Go(int balance, int first_v, int last_v, int depth, int teleport_depth
                         }
                     }
                 }
-                if (branches < segments_limit && Segments() + 1 <= segments_limit && pos+1 < last_id)
+                if (branches < branch_limit && Segments() + 1 <= segments_limit && pos+1 < last_id)
                 {
                     int u = pr->At(pos+1);
                     int unum = num(i, u);
@@ -318,6 +326,7 @@ bool LKH::Go(int balance, int first_v, int last_v, int depth, int teleport_depth
 
 void LKH::GoRandom()
 {
+    use_dp = false;
     int r = rng()%n;
     pr->Cut(r);
     int first_v = pr->At(0);
@@ -328,12 +337,14 @@ void LKH::GoRandom()
 }
 void LKH::GoRandomFor(double t)
 {
+    use_dp = false;
     auto t0 = Time();
     while (Time() - t0 < t)
         GoRandom();
 }
 void LKH::GoWhile()
 {
+    use_dp = false;
     vector<int> perm;
     for (int i=0; i<n; i++)
         perm.pb(i);
@@ -342,7 +353,8 @@ void LKH::GoWhile()
     int no_upd = 0;
     while (no_upd < n)
     {
-        int delta = (perm[(id+1)%n] - perm[id] + n)%n;
+        int delta = (perm[(id+1)%n] - perm[id%n] + n)%n;
+        id=(id+1)%n;
         pr->Cut(delta);
         int first_v = pr->At(0);
         int last_v = pr->At(n-1);
@@ -354,8 +366,63 @@ void LKH::GoWhile()
         CheckForOutput();
     }
 }
+void LKH::GoRandomWhile(double t)
+{
+    use_dp = false;
+    vector<int> perm;
+    for (int i=0; i<n; i++)
+        perm.pb(i);
+    shuffle(perm.begin(), perm.end(), rng);
+    int id = 0;
+    int no_upd = 0;
+    auto t0 = Time();
+    while (no_upd < n && Time() - t0 < t)
+    {
+        int delta = (perm[(id+1)%n] - perm[id%n] + n)%n;
+        id=(id+1)%n;
+        pr->Cut(delta);
+        int first_v = pr->At(0);
+        int last_v = pr->At(n-1);
+        InitializeGo();
+        if (Go(DistW(first_v, last_v), first_v, last_v, 0, 0))
+            no_upd = 0;
+        else
+            no_upd++;
+        CheckForOutput();
+    }
+}
+void LKH::GoWhileDP()
+{
+    use_dp = true;
+    DpFullRecalc();
+    vector<int> perm;
+    for (int i=0; i<n; i++)
+        perm.pb(i);
+    shuffle(perm.begin(), perm.end(), rng);
+    int id = 0;
+    int no_upd = 0;
+    while (no_upd < n)
+    {
+        int delta = (perm[(id+1)%n] - perm[id%n] + n)%n;
+        id=(id+1)%n;
+        pr->Cut(delta);
+        int first_v = pr->At(0);
+        int last_v = pr->At(n-1);
+        InitializeGo();
+        if (Go(DistW(first_v, last_v), first_v, last_v, 0, 0))
+        {
+            no_upd = 0;
+            DpFullRecalc();
+        }
+        else
+        {
+            no_upd++;
+        }
+        CheckForOutput();
+    }
+}
 
-void LKH::Main(vector<int>& tour)
+void LKH::InitialOptimize(vector<int>& tour)
 {
     T_Init = Time();
     curlength = Length(tour);
@@ -364,36 +431,82 @@ void LKH::Main(vector<int>& tour)
     for (double w : W_optimal)
         W.pb(floor(w+0.5));
 
+    struct Step
+    {
+        int s;
+        int b;
+        int tp;
+        double time;
+    };
+    int tpinf = 1e9;
+    auto ProcessStep = [&](Step s)
+    {
+        cout<<"s"<<s.s<<" b"<<s.b<<" t";
+        if (s.tp == tpinf) cout<<"inf";
+        else cout<<s.tp;
+        cout<<"\n";
+
+        teleport_limit = s.tp;
+        dynamic_segment_limit = [s](int d){ return s.s; };
+        dynamic_branch_limit = [s](int d){ return (d <= s.b) ? 100 : 0; };
+        GoRandomWhile(s.time);
+        OutputSkipStage();
+    };
+
+    vector<Step> V1 =
+    {
+        Step{ 1, 1, tpinf, 15.0 },
+        Step{ 1, 3, tpinf,  5.0 },
+    };
     pr = make_shared<PermReverseTreap>(tour);
+    cout<<"init\n";
+    OutputSkipStage();
+    for (Step s : V1)
+        ProcessStep(s);
 
-    OutputSkipStage();
+    vector<Step> V2 =
+    {
+        Step{ 1,  5, tpinf, 15.0 },
+        Step{ 1, 10, tpinf, 15.0 },
+        Step{ 1, 15, tpinf, 15.0 },
+        Step{ 1, 20, tpinf, 15.0 },
 
-    cout<<"s1 b5\n";
-    dynamic_segment_limit = [](int d){ return 1; };
-    dynamic_branch_limit = [](int d){ return (d <= 5) ? 100 : 1; };
-    GoRandomFor(15);
-    OutputSkipStage();
-    cout<<"s1 b10\n";
-    dynamic_segment_limit = [](int d){ return 1; };
-    dynamic_branch_limit = [](int d){ return (d <= 10) ? 100 : 1; };
-    GoRandomFor(10);
-    OutputSkipStage();
+        Step{ 2,  5, tpinf, 10.0 },
+        Step{ 2,  5,     0, 10.0 },
+
+        Step{ 2, 10, tpinf, 3.0 },
+        Step{ 2, 10,     0, 10.0 },
+
+        Step{ 2, 15, tpinf, 3.0 },
+        Step{ 2, 15,     0, 10.0 },
+
+        Step{ 2, 20, tpinf, 3.0 },
+        Step{ 2, 20,     0, 20.0 },
+    };
+    pr = make_shared<PermReverse>(Tour());
+    for (Step s : V2)
+        ProcessStep(s);
 
     tour = Tour();
-    pr = make_shared<PermReverse>(tour);
-    teleport_limit = 1e9;
-    cout<<"s1 b15\n";
-    dynamic_segment_limit = [](int d){ return 1; };
-    dynamic_branch_limit = [](int d){ return (d <= 15) ? 100 : 1; };
-    GoWhile();
-    OutputSkipStage();
+}
 
-    for (int b : {5, 10, 15, 20})
+void LKH::FinalOptimize(vector<int>& tour)
+{
+    T_Init = Time();
+    curlength = Length(tour);
+    W.clear();
+    for (double w : W_optimal)
+        W.pb(floor(w+rng()*1.0/UINT_MAX));
+
+    pr = make_shared<PermReverse>(tour);
+
+    for (int b = 62; ; b += 5)
     {
-        cout<<"s2 b"<<b<<" t0\n";
-        teleport_limit = 0;
-        dynamic_segment_limit = [](int d){ return 2; };
-        dynamic_branch_limit = [b](int d){ return (d <= b) ? 100 : 0; };
-        GoWhile();
-        OutputSkipStage();    }
+        cout<<"b"<<b<<"\n";
+        teleport_limit = -1;
+        dynamic_segment_limit = [](int d){ return 3; };
+        dynamic_branch_limit = [b](int d){ return (d <= b) ? 100 : 1; };
+        GoWhileDP();
+        OutputSkipStage();
+    }
 }

@@ -13,6 +13,7 @@ LKH::LKH(vector<pair<int, int> > tsp_, vector<vector<int> > g_, vector<double> W
     updates_since_last_output = 0;
     tries_since_last_output = 0;
     teleport_limit = 0;
+    overflow_counter = 0;
 }
 
 
@@ -36,13 +37,16 @@ vector<int> LKH::Tour()
 }
 void LKH::CheckForOutput()
 {
+    double timelimit = 4.0;
     double T = Time();
     if (
-//        curlength != L_Output
-//        &&
-        T > T_Output + 1.0
+        (T > T_Output + timelimit)
+        ||
+        (T > T_Output + 2*timelimit && curlength != L_Output)
         )
     {
+        if (overflow_counter > 0)
+            cout<<"overflows: "<<overflow_counter<<"\n";
         cout<<"current length: "<<curlength<<", upd="<<updates_since_last_output<<"/"<<tries_since_last_output<<", t="<<T-T_Init<<".\n";
         updates_since_last_output = 0;
         tries_since_last_output = 0;
@@ -56,6 +60,7 @@ void LKH::CheckForOutput()
 
         T_Output = Time();
         L_Output = curlength;
+        overflow_counter = 0;
     }
 }
 void LKH::OutputSkipStage()
@@ -67,8 +72,69 @@ void LKH::OutputSkipStage()
 void LKH::InitializeGo()
 {
     tries_since_last_output++;
+    overflown = false;
     segments = {n};
     state = SetHash();
     changed.Clear();
     states.Clear();
+}
+
+int LKH::DpSingleRecalc(int v, int depth)
+{
+    if (depth <= 0)
+        return dp[v];
+
+    int best = 1e9;
+    int pos = pr->Where(v);
+    int crit = dp[v];
+    for (int d=-1; d<=1; d+=2)
+    {
+        int u = pr->At((pos+d+n)%n);
+        if (changed.Count(num(v, u)))
+            continue;
+        changed.Insert(num(v, u));
+        for (int w : g[u])
+            if (w != v && w != pr->At((pos+2*d+n)%n))
+            {
+                if (changed.Count(num(u, w)))
+                    continue;
+                changed.Insert(num(u, w));
+                best = min(best, DpSingleRecalc(w, depth-1) + DistW(u, w) - DistW(v, u));
+                changed.Undo();
+                if (best <= crit)
+                {
+                    changed.Undo();
+                    return crit;
+                }
+            }
+        changed.Undo();
+    }
+    return best;
+}
+
+void LKH::DpFullRecalc()
+{
+    cout<<"Starting DP calculation...\n";
+
+    dp.assign(n, 0);
+
+    for (int _=0; _<5; _++)
+    {
+        for (int i=0; i<n; i++)
+        {
+            changed.Clear();
+            dp[i] = max(dp[i], DpSingleRecalc(i, 5));
+        }
+    }
+
+    ofstream fout("data/dp.txt");
+    for (int i : dp)
+        fout<<i<<endl;
+
+    cout<<"DP calculated!\n";
+
+//    map<int, int> mp;
+//    for (int i=0; i<n; i++)
+//        mp[dp[i]]++;
+//    PrintMapStats(mp);
 }
