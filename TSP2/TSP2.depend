@@ -539,3 +539,117 @@
 	"solvers.h"
 	"visualizer.h"
 
+1744724202 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\__experimental.cpp
+	"common.h"
+	"solvers.h"
+	"visualizer.h"
+	"mst.h"
+
+1746476436 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\common.h
+	<bits/stdc++.h>
+
+1745011657 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\solvers.h
+	"common.h"
+
+1744325048 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\visualizer.h
+	"common.h"
+	<SFML/Graphics.hpp>
+
+1744808611 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst.h
+	"common.h"
+
+1744107372 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\collect_stats.cpp
+	"solvers.h"
+	"mst.h"
+	"mst2.h"
+
+1741822798 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst2.h
+	<bits/stdc++.h>
+	"common.h"
+
+1744803380 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\common.cpp
+	"common.h"
+
+1744724482 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\compare_ga.cpp
+	"solvers.h"
+	"mst.h"
+
+1744062266 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\estimate_mst.cpp
+	"solvers.h"
+	"mst.h"
+
+1744717401 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\greedy_adder.cpp
+	"solvers.h"
+
+1730144908 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\greedy_edge_picker.cpp
+	"solvers.h"
+
+1744291363 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\hamiltoniancycle.cpp
+	"solvers.h"
+
+1744306603 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\hamiltoniansolver.cpp
+	"solvers.h"
+
+1745364055 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\lin_kernighan_ga.cpp
+	"solvers.h"
+	"visualizer.h"
+
+1745006596 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\load_gpt.cpp
+	<cmath>
+	<fstream>
+	<sstream>
+	<stdexcept>
+	<string>
+	<vector>
+	"common.h"
+
+1730147519 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\local_dp_optimizer.cpp
+	"solvers.h"
+	"smart_set.h"
+
+1729867588 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\smart_set.h
+	<bits/stdc++.h>
+
+1744327434 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst.cpp
+	"mst.h"
+
+1741822535 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst2.cpp
+	"mst2.h"
+	"common.h"
+
+1741790456 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst2_bruteforce.cpp
+	"mst2.h"
+	"common.h"
+
+1743958597 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst2_descent.cpp
+	"mst2.h"
+
+1745009108 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst_gradesc_2.cpp
+	"mst.h"
+	"visualizer.h"
+	"solvers.h"
+
+1744808225 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst_matrix.cpp
+	"mst.h"
+
+1729843800 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\nearest_neighbor.cpp
+	"solvers.h"
+
+1729867671 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\smart_set.cpp
+	"smart_set.h"
+
+1746483828 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\visualizer.cpp
+	"visualizer.h"
+
+1746476821 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\main.cpp
+	"common.h"
+	"mst.h"
+	"solvers.h"
+	"smart_set.h"
+	"mst2.h"
+	"visualizer.h"
+	"tsplibdata.h"
+
+1745007350 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\tsplibdata.h
+	"bits/stdc++.h"
+

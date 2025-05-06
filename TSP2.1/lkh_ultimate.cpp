@@ -173,7 +173,7 @@ bool LKH::Go(int balance, int first_v, int last_v, int depth, int teleport_depth
         {
             if (branches >= branch_limit) break;
             int new_balance = balance - DistW(first_v, i);
-            if (new_balance <= (use_dp ? (teleport_depth > 0 ? dp[i] : 0) : 0))
+            if (new_balance <= (use_dp ? (teleport_depth > 0 ? 0 : dp[i]) : 0))
                 continue;
             int inum = num(first_v, i);
             if (changed.Count(inum))
@@ -496,16 +496,16 @@ void LKH::FinalOptimize(vector<int>& tour)
     curlength = Length(tour);
     W.clear();
     for (double w : W_optimal)
-        W.pb(floor(w+rng()*1.0/UINT_MAX));
+        W.pb(floor(w+0.5));
 
     pr = make_shared<PermReverse>(tour);
 
-    for (int b = 62; ; b += 5)
+    for (int s = 2; ; s++)
     {
-        cout<<"b"<<b<<"\n";
-        teleport_limit = -1;
-        dynamic_segment_limit = [](int d){ return 3; };
-        dynamic_branch_limit = [b](int d){ return (d <= b) ? 100 : 1; };
+        cout<<"s"<<s<<"\n";
+        teleport_limit = -2;
+        dynamic_segment_limit = [s](int d){ return s; };
+        dynamic_branch_limit = [](int d){ return 100; };
         GoWhileDP();
         OutputSkipStage();
     }

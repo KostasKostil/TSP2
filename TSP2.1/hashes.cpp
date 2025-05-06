@@ -1,6 +1,6 @@
 #include "common.h"
 
-static const uint ISMASK = (1<<30)-1;
+static const uint ISMASK = (1<<25)-1;
 static const uint PSMASK = (1<<13)-1;
 static const ull  PSZERO = 0xA5B85C5E198ED849ULL;
 

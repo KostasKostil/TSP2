@@ -87,7 +87,14 @@ int LKH::DpSingleRecalc(int v, int depth)
     int best = 1e9;
     int pos = pr->Where(v);
     int crit = dp[v];
-    for (int d=-1; d<=1; d+=2)
+
+    vector<int> d_ord = {-1, 1};
+    vector<int> u_ord;
+    for (int d : d_ord)
+        u_ord.pb(pr->At((pos+d+n)%n));
+    if (DistW(v, u_ord[0]) < DistW(v, u_ord[1]))
+        swap(d_ord[0], d_ord[1]);
+    for (int d : d_ord)
     {
         int u = pr->At((pos+d+n)%n);
         if (changed.Count(num(v, u)))
@@ -98,8 +105,13 @@ int LKH::DpSingleRecalc(int v, int depth)
             {
                 if (changed.Count(num(u, w)))
                     continue;
+                int extraneed = DistW(u, w) - DistW(v, u);
+                if (extraneed + dp[w] >= best)
+                    continue;
+
                 changed.Insert(num(u, w));
-                best = min(best, DpSingleRecalc(w, depth-1) + DistW(u, w) - DistW(v, u));
+                best = min(best, extraneed + max(dp[w], DpSingleRecalc(w, depth-1) ) );
+
                 changed.Undo();
                 if (best <= crit)
                 {
@@ -118,23 +130,23 @@ void LKH::DpFullRecalc()
 
     dp.assign(n, 0);
 
-    for (int _=0; _<5; _++)
+    for (int d = 1; d <= 15; d++)
     {
         for (int i=0; i<n; i++)
         {
             changed.Clear();
-            dp[i] = max(dp[i], DpSingleRecalc(i, 5));
+            dp[i] = max(dp[i], DpSingleRecalc(i, d));
         }
+
+        cout<<"dp depth "<<d<<":\n";
+        map<int, int> mp;
+        for (int i=0; i<n; i++)
+            mp[min(10, dp[i])]++;
+        PrintMapStats(mp);
     }
 
     ofstream fout("data/dp.txt");
     for (int i : dp)
         fout<<i<<endl;
-
     cout<<"DP calculated!\n";
-
-//    map<int, int> mp;
-//    for (int i=0; i<n; i++)
-//        mp[dp[i]]++;
-//    PrintMapStats(mp);
 }

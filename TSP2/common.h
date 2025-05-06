@@ -4,7 +4,7 @@
 #define se second
 #define pb push_back
 
-inline std::mt19937 rng(time(0));
+inline std::mt19937 rng(47);
 const double EPS = 1e-9;
 const double INF = 1e9;    // for numerical methods
 const double INFDP = 1e36; // for dp initialization

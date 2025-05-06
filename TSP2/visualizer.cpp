@@ -2,6 +2,14 @@
 
 using namespace std;
 
+static sf::Color bgcol = sf::Color::Black;
+static sf::Color pcol = sf::Color::White;
+
+//static sf::Color bgcol = sf::Color::White;
+//static sf::Color pcol = sf::Color::Black;
+
+static double rad = 6;
+
 Visualizer::Visualizer(int sz)
 {
     L = sz;
@@ -119,7 +127,7 @@ void Visualizer::Render()
 {
     lock_guard<mutex> lg(upd_mutex);
 
-    window->clear(sf::Color::Black);
+    window->clear(bgcol);
 
     if (tsp.size() > 0)
     {
@@ -144,13 +152,13 @@ void Visualizer::Render()
         auto fx = [&](double x){ return fa((x-SX)/DX, dx) * L; };
         auto fy = [&](double y){ return fa((y-SY)/DY, dy) * L; };
 
-        double r = 7;
+        double r = rad;
         for (Point q : tsp.coords)
         {
             sf::CircleShape c;
 
             c.setRadius(r);
-            c.setFillColor(sf::Color::White);
+            c.setFillColor(pcol);
             c.setPosition( fx(q.x)-r, fy(q.y)-r );
 
             window->draw(c);

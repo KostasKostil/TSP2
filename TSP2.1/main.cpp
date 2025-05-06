@@ -109,17 +109,17 @@ int main()
 //    vis.SetGraph(0, 0, 255, ed);
 //    return 0;
 
+    vector<int> t = LoadTour(n, "tours/5757824.txt");
+    cout<<"LENGTH = "<<Length(tsp, t)<<"\n";
+
 /// compare to world record
     {
-        vector<int> t = LoadTour(n, "tours/lkh.txt");
         Visualizer vis;
         vis.SetTSP(tsp);
         vis.SetCycle(0, 255, 0, tour);
         vis.SetCycle(255, 0, 0, t);
         return 0;
     }
-
-//    cout<<"STARTING PROCESSING OF TOUR. LENGTH = "<<Length(tsp, t)<<"\n";
 
 //    assert(int(set<int>(t.begin(), t.end()).size()) == n);
 //    FeasibleLKH(tsp, g, G, t);
