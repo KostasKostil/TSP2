@@ -545,7 +545,7 @@
 	"visualizer.h"
 	"mst.h"
 
-1746476436 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\common.h
+1746793083 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\common.h
 	<bits/stdc++.h>
 
 1745011657 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\solvers.h
@@ -558,7 +558,7 @@
 1744808611 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\mst.h
 	"common.h"
 
-1744107372 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\collect_stats.cpp
+1747085960 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\collect_stats.cpp
 	"solvers.h"
 	"mst.h"
 	"mst2.h"
@@ -641,7 +641,7 @@
 1746483828 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\visualizer.cpp
 	"visualizer.h"
 
-1746476821 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\main.cpp
+1747085726 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\main.cpp
 	"common.h"
 	"mst.h"
 	"solvers.h"
@@ -652,4 +652,7 @@
 
 1745007350 c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\tsplibdata.h
 	"bits/stdc++.h"
+
+1746793364 source:c:\users\kostya\desktop\cb projects\sfml\tsp2\tsp2\edmons.cpp
+	"common.h"
 

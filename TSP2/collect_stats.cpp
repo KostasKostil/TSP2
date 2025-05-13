@@ -214,7 +214,7 @@ void CollectStats(int n)
 //                stats.AddStat(Estimate_MST2(tsp, 100, 0), "** MST2 simple estimate");
             }
 
-            for (int dp_opt = 0; dp_opt <= 1; dp_opt++)
+            for (int dp_opt = 0; dp_opt <= 0; dp_opt++)
             {
                 string pref = "";
                 string suf = "";
@@ -229,7 +229,7 @@ void CollectStats(int n)
 
                 go(SolveNearestNeighbor(tsp), "NearestNeighbour");
                 go(SolveGreedyEdgePicker(tsp), "GreedyEdgePicker");
-                go(SolveGreedyEdgePicker(tsp, 12), "GreedyEdgePicker sz=12");
+//                go(SolveGreedyEdgePicker(tsp, 12), "GreedyEdgePicker sz=12");
 
                 if (mst_transform == 0)
                 {
@@ -237,15 +237,15 @@ void CollectStats(int n)
                     go(SolveGreedyAdder(tsp, 200), "GreedyAdder iter=200");
                 }
 
-                {
-                    auto matr = ComputeMST_Matrix(tsp, 0);
-                    auto tspx = tsp;
-                    for (int i=0; i<tsp.n; i++)
-                        for (int j=0; j<tsp.n; j++)
-                            if (i != j)
-                                tspx[i][j] = max(0.0, tsp[i][j] - matr[i][j]);
-                    go(SolveHamiltonian(tspx, tsp), "Hamiltonian");
-                }
+//                {
+//                    auto matr = ComputeMST_Matrix(tsp, 0);
+//                    auto tspx = tsp;
+//                    for (int i=0; i<tsp.n; i++)
+//                        for (int j=0; j<tsp.n; j++)
+//                            if (i != j)
+//                                tspx[i][j] = max(0.0, tsp[i][j] - matr[i][j]);
+//                    go(SolveHamiltonian(tspx, tsp), "Hamiltonian");
+//                }
             }
         }
 

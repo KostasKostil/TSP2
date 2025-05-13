@@ -63,3 +63,4 @@ struct DSU
 
 void __experiment();
 void AnalyzeCycle(TSP tsp, std::vector<int> v);
+std::vector<std::pair<int,int>> minWeightPerfectMatching(const std::vector<std::vector<double>>& w);

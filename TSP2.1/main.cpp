@@ -84,16 +84,16 @@ int main()
 //    }
 //    return 0;
 
-    {
-//        vector<int> t = LoadTour(n, "tours/initial3/5759521_241.txt");
-//        vector<int> t = LoadTour(n, "tours/res/5758000.txt");
-        vector<int> t = LoadTour(n, "tours/lkh.txt");
-        LKH lkh(tsp, g, W);
-        lkh.FinalOptimize(t);
-    }
+//    {
+////        vector<int> t = LoadTour(n, "tours/initial3/5759521_241.txt");
+////        vector<int> t = LoadTour(n, "tours/res/5758000.txt");
+//        vector<int> t = LoadTour(n, "tours/lkh.txt");
+//        LKH lkh(tsp, g, W);
+//        lkh.FinalOptimize(t);
+//    }
 
     /// solver
-    Common::Wflag = true;
+//    Common::Wflag = true;
 //    vector<int> t = LoadTour(n, "data/5762191.txt");
 //    shuffle(t.begin(), t.end(), rng);
 
@@ -109,7 +109,7 @@ int main()
 //    vis.SetGraph(0, 0, 255, ed);
 //    return 0;
 
-    vector<int> t = LoadTour(n, "tours/5757824.txt");
+    vector<int> t = LoadTour(n, "tours/lkh.txt");
     cout<<"LENGTH = "<<Length(tsp, t)<<"\n";
 
 /// compare to world record
@@ -118,6 +118,23 @@ int main()
         vis.SetTSP(tsp);
         vis.SetCycle(0, 255, 0, tour);
         vis.SetCycle(255, 0, 0, t);
+
+        auto num = [&](int x, int y){ return (long long)(n*max(x, y)) + min(x, y); };
+
+        set<long long> st;
+        for (int i=0; i<n; i++)
+        {
+            long long x = num(t[i], t[(i+1)%n]);
+            st.insert(x);
+        }
+        int cnt = 0;
+        for (int i=0; i<n; i++)
+        {
+            long long x = num(tour[i], tour[(i+1)%n]);
+            if (st.count(x))
+                cnt++;
+        }
+        cout<<"COMMON EDGES: "<<cnt<<"\n";
         return 0;
     }
 

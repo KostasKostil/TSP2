@@ -76,6 +76,7 @@
 		<Unit filename="common.cpp" />
 		<Unit filename="common.h" />
 		<Unit filename="compare_ga.cpp" />
+		<Unit filename="edmons.cpp" />
 		<Unit filename="estimate_mst.cpp" />
 		<Unit filename="greedy_adder.cpp" />
 		<Unit filename="greedy_edge_picker.cpp" />
